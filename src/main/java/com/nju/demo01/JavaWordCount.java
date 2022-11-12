@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.nju.consts.UrlConstants.PATH;
+
 
 /**
  * @date:2022/11/1 23:29
@@ -18,10 +20,9 @@ public class JavaWordCount {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     public static void main(String[] args) {
-        String path = JavaWordCount.class.getClassLoader().getResource("words.txt").getPath();
-        SparkSession spark = SparkSession.builder().appName("JavaWordCount").getOrCreate();
+        SparkSession spark = SparkSession.builder().appName("JavaWordCount").master("local").getOrCreate();
 
-        JavaRDD<String> lines = spark.read().textFile(path).javaRDD();
+        JavaRDD<String> lines = spark.read().textFile(PATH).javaRDD();
 
         JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(SPACE.split(s)).iterator());
 
@@ -35,6 +36,5 @@ public class JavaWordCount {
             System.out.println(tuple2._1() + ": " + tuple2._2());
         }
         spark.stop();
-
     }
 }
