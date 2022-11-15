@@ -22,8 +22,8 @@ public class WordCountTest01 {
             sc.textFile("data/*.csv").zipWithIndex()
                     .filter(t -> t._2 % 2 == 1)
                     .map(t -> t._1.split(","))
-                    .mapToPair(t -> new Tuple2<>(t[1], t[4]))
-                    .flatMapValues(s -> Arrays.asList(s.split(" ")).iterator())
+                    .mapToPair(t -> new Tuple2<>(t[1], t[3]))
+                    .flatMapValues(s -> Arrays.asList(s.split(",")).iterator())
                     .mapToPair(t -> new Tuple2<>(new Tuple2<>(t._1, t._2), 1))
                     .reduceByKey(Integer::sum)
                     .mapToPair(t -> new Tuple2<>(t._1._1, new Tuple2<>(t._1._2, t._2)))
@@ -31,6 +31,8 @@ public class WordCountTest01 {
                     .mapValues(item -> StreamSupport.stream(item.spliterator(),
                             false).sorted(new MyComparator()).limit(3).collect(Collectors.toList()))
                     .collect().forEach(System.out::println);
+
+
             long end = System.currentTimeMillis();
             System.out.println((end - start) / 1000);
         }
