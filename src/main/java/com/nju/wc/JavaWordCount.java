@@ -1,4 +1,4 @@
-package com.nju.demo01;
+package com.nju.wc;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;

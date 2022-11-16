@@ -1,6 +1,6 @@
 package com.nju.consts;
 
-import com.nju.demo01.JavaWordCount;
+import com.nju.wc.JavaWordCount;
 
 /**
  * @description 常量类
