@@ -20,6 +20,12 @@
             <artifactId>spark-sql_2.12</artifactId>
             <version>3.3.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.12</artifactId>
+            <version>3.3.1</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-collection-compat -->
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
