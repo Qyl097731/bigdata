@@ -27,6 +27,7 @@ public class SparkSqlTest01 {
 
         // DataFrame => DSL
         df.select("age", "username").show();
+        df.selectExpr("username", "age+5 as newName").show();
 
         // DataSet
         df.filter(df.col("username").equalTo("张三")).show();
