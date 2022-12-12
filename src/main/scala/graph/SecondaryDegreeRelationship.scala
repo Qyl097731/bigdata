@@ -6,6 +6,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import util.RedisClient
 
+import java.util.concurrent.{Executors, TimeUnit}
 import scala.collection.mutable
 
 /**
@@ -24,19 +25,17 @@ object SecondaryDegreeRelationship {
   case class Message()
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setAppName("SecondaryDegreeRelationship").setMaster("local[1]")
+    Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() => dailyUpdate(), 0, 12, TimeUnit.HOURS)
+  }
+
+  def dailyUpdate(): Unit = {
+    val conf = new SparkConf().setAppName("SecondaryDegreeRelationship").setMaster("local[*]").set("spark.testing.memory", "512000000")
     val sparkContext = SparkContext.getOrCreate(conf)
-    val edges: RDD[Edge[ED]] = sparkContext.textFile(this.getClass.getResource("/focus.csv").getPath).map(line
+    val edges: RDD[Edge[ED]] = sparkContext.textFile("../focus.csv").map(line
     => {
       val tokens = line.split(",")
       Edge[ED](tokens(0).toLong, tokens(1).toLong, null)
     })
-
-    val users = sparkContext.textFile(this.getClass.getResource("/users.csv").getPath).map(line => {
-      val tokens = line.split(",")
-      (tokens(0).toLong, User(tokens(1), tokens(2).toInt))
-    }).collectAsMap()
-
 
     // 构造
     val graph = Graph.fromEdges(edges, VD(mutable.Map[Long, Int]()))
@@ -71,15 +70,6 @@ object SecondaryDegreeRelationship {
     for (elem <- array) {
       client.set(elem._1.toString, StringUtils.join(elem._2.toString(), ","))
     }
-
-    args.foreach(arg => {
-      println(s"推荐 ${arg} 关注 ：")
-      val value = client.get(arg)
-      val listStr = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));
-      listStr.split(",").foreach(item => {
-        println(users.get(item.toLong))
-      })
-    })
   }
 }
 
